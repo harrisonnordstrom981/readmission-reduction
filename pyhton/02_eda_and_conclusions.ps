@@ -1,0 +1,125 @@
+"""
+02_eda_and_conclusions.py
+EDA + written conclusions tables + plots.
+"""
+
+import os
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import statsmodels.api as sm
+from 00_config import CFG
+
+INFILE = os.path.join(CFG.out_dir, "per_hospital_risk_score.csv")
+
+def safe_numeric(series: pd.Series) -> pd.Series:
+    return pd.to_numeric(series, errors="coerce")
+
+def main() -> None:
+    if not os.path.exists(INFILE):
+        raise FileNotFoundError(f"Missing {INFILE}. Run 01_pull_from_bigquery.py first.")
+
+    os.makedirs(CFG.out_dir, exist_ok=True)
+    df = pd.read_csv(INFILE)
+
+    # Clean + feature prep
+    df["overall_rating"] = safe_numeric(df["overall_rating"])
+    df["avg_excess_ratio"] = safe_numeric(df["avg_excess_ratio"])
+    df["measures_reported"] = safe_numeric(df["measures_reported"])
+    df["measures_above_1"] = safe_numeric(df["measures_above_1"])
+
+    # Drop rows missing main metric
+    df = df[df["avg_excess_ratio"].notna()].copy()
+
+    # --- Core summary ---
+    summary = df["avg_excess_ratio"].describe()
+    summary_path = os.path.join(CFG.out_dir, "summary_avg_excess_ratio.csv")
+    summary.to_csv(summary_path)
+    print("Saved:", summary_path)
+
+    # --- Correlation: rating vs excess ratio ---
+    corr = df[["overall_rating", "avg_excess_ratio"]].dropna().corr().iloc[0, 1]
+    print(f"Correlation (overall_rating vs avg_excess_ratio): {corr:.4f}")
+
+    # --- Group averages by rating ---
+    rating_group = (
+        df.dropna(subset=["overall_rating"])
+          .groupby("overall_rating")["avg_excess_ratio"]
+          .agg(["count", "mean", "median"])
+          .reset_index()
+          .sort_values("overall_rating")
+    )
+    rating_group_path = os.path.join(CFG.out_dir, "avg_excess_by_rating.csv")
+    rating_group.to_csv(rating_group_path, index=False)
+    print("Saved:", rating_group_path)
+
+    # Plot: Avg excess by rating
+    plt.figure()
+    plt.plot(rating_group["overall_rating"], rating_group["mean"], marker="o")
+    plt.xlabel("Hospital Overall Rating")
+    plt.ylabel("Mean Avg Excess Readmission Ratio")
+    plt.title("Avg Excess Readmission Ratio by Overall Rating")
+    plt.tight_layout()
+    plt.savefig(os.path.join(CFG.out_dir, "plot_avg_excess_by_rating.png"), dpi=200)
+    plt.close()
+
+    # --- Ownership comparison ---
+    ownership_group = (
+        df.groupby("hospital_ownership")["avg_excess_ratio"]
+          .agg(["count", "mean", "median"])
+          .reset_index()
+          .sort_values(["mean"], ascending=False)
+    )
+    ownership_group_path = os.path.join(CFG.out_dir, "avg_excess_by_ownership.csv")
+    ownership_group.to_csv(ownership_group_path, index=False)
+    print("Saved:", ownership_group_path)
+
+    # --- Type comparison ---
+    type_group = (
+        df.groupby("hospital_type")["avg_excess_ratio"]
+          .agg(["count", "mean", "median"])
+          .reset_index()
+          .sort_values(["mean"], ascending=False)
+    )
+    type_group_path = os.path.join(CFG.out_dir, "avg_excess_by_hospital_type.csv")
+    type_group.to_csv(type_group_path, index=False)
+    print("Saved:", type_group_path)
+
+    # --- Top 20 hospitals overall (highest avg_excess_ratio) ---
+    top20 = df.sort_values("avg_excess_ratio", ascending=False).head(20)
+    top20_path = os.path.join(CFG.out_dir, "top20_highest_avg_excess.csv")
+    top20.to_csv(top20_path, index=False)
+    print("Saved:", top20_path)
+
+    # --- Top 10 per state (window rank already computed) ---
+    top10_state = df[df["rank_in_state_overall"].notna()].copy()
+    top10_state = top10_state[top10_state["rank_in_state_overall"] <= 10]
+    top10_state_path = os.path.join(CFG.out_dir, "top10_by_state.csv")
+    top10_state.to_csv(top10_state_path, index=False)
+    print("Saved:", top10_state_path)
+
+    # --- Simple regression (interpretability): predict avg_excess_ratio from rating + measures_reported ---
+    reg_df = df.dropna(subset=["overall_rating", "measures_reported", "avg_excess_ratio"]).copy()
+    X = reg_df[["overall_rating", "measures_reported"]]
+    X = sm.add_constant(X)
+    y = reg_df["avg_excess_ratio"]
+    model = sm.OLS(y, X).fit()
+
+    reg_summary_path = os.path.join(CFG.out_dir, "ols_avg_excess_ratio_summary.txt")
+    with open(reg_summary_path, "w", encoding="utf-8") as f:
+        f.write(model.summary().as_text())
+    print("Saved:", reg_summary_path)
+
+    # --- Quick “talking point” numbers ---
+    # Compare low-rated vs high-rated hospitals
+    low = df[df["overall_rating"].isin([1, 2])]["avg_excess_ratio"].dropna()
+    high = df[df["overall_rating"].isin([4, 5])]["avg_excess_ratio"].dropna()
+    if len(low) > 0 and len(high) > 0:
+        diff = low.mean() - high.mean()
+        pct = (diff / high.mean()) * 100 if high.mean() != 0 else np.nan
+        print(f"Mean avg_excess_ratio (ratings 1-2): {low.mean():.4f}")
+        print(f"Mean avg_excess_ratio (ratings 4-5): {high.mean():.4f}")
+        print(f"Difference: {diff:.4f} ({pct:.2f}% vs high-rated mean)")
+
+if __name__ == "__main__":
+    main()
