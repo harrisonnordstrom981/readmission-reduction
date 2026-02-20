@@ -1,12 +1,2 @@
--- ============================================================
--- 00_setup.sql
--- Purpose: Create dataset + (optional) external/raw table placeholders
--- BigQuery Standard SQL
--- ============================================================
-
--- Create a dataset (schema)
-CREATE SCHEMA IF NOT EXISTS `YOUR_PROJECT_ID.YOUR_DATASET`
-OPTIONS (
-  location = "US",
-  description = "SQL analytics project dataset (raw -> staging -> clean -> analysis)."
-);
+CREATE SCHEMA IF NOT EXISTS `YOUR_PROJECT.readmissions`
+OPTIONS(location="US", description="CMS HRRP + Hospital General Info analysis.");
