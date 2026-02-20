@@ -1,0 +1,16 @@
+-- ============================================================
+-- 02_clean_views.sql
+-- Purpose: Analysis-ready clean view(s)
+-- ============================================================
+
+CREATE OR REPLACE VIEW `YOUR_PROJECT_ID.YOUR_DATASET.events_clean` AS
+SELECT
+  event_id,
+  user_id,
+  event_ts,
+  DATE(event_ts) AS event_date,
+  event_name,
+  platform,
+  properties
+FROM `YOUR_PROJECT_ID.YOUR_DATASET.stg_events`
+WHERE event_ts IS NOT NULL;
