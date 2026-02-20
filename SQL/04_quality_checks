@@ -1,0 +1,21 @@
+-- ============================================================
+-- 99_quality_checks.sql
+-- Purpose: Basic data quality checks
+-- ============================================================
+
+-- Null timestamp rate
+SELECT
+  COUNT(*) AS total_rows,
+  COUNTIF(event_ts IS NULL) AS null_event_ts,
+  ROUND(100 * COUNTIF(event_ts IS NULL) / COUNT(*), 2) AS pct_null_event_ts
+FROM `YOUR_PROJECT_ID.YOUR_DATASET.stg_events`;
+
+-- Duplicate event_id check (if event_id should be unique)
+SELECT
+  event_id,
+  COUNT(*) AS n
+FROM `YOUR_PROJECT_ID.YOUR_DATASET.stg_events`
+GROUP BY event_id
+HAVING COUNT(*) > 1
+ORDER BY n DESC
+LIMIT 50;
