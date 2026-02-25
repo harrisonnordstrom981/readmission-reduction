@@ -96,7 +96,8 @@ Window functions were used to rank hospitals by readmission risk.
 
 ### Hospital Readmission Risk Analysis Dashboard
 
-![Dashboard](images/dashboard.png)
+<img width="949" height="627" alt="image" src="https://github.com/user-attachments/assets/6ec7717a-2417-4d68-8887-2683846f96b4" />
+
 
 The Tableau dashboard explores hospital readmission risk across several dimensions.
 
@@ -104,7 +105,8 @@ The Tableau dashboard explores hospital readmission risk across several dimensio
 
 ### Readmission Risk by Hospital Rating
 
-![Risk by Rating](images/risk_by_rating.png)
+<img width="496" height="287" alt="image" src="https://github.com/user-attachments/assets/b0d1d927-89fc-44e5-882f-5cdb2b1e927d" />
+
 
 Higher-rated hospitals generally show lower readmission risk.
 
@@ -112,7 +114,8 @@ Higher-rated hospitals generally show lower readmission risk.
 
 ### Readmission Risk by Hospital Ownership
 
-![Risk by Ownership](images/risk_by_ownership.png)
+<img width="492" height="337" alt="image" src="https://github.com/user-attachments/assets/4542ae9c-0e3f-4172-b83c-1f8cb9590575" />
+
 
 Ownership type shows small but measurable differences in readmission risk.
 
@@ -120,7 +123,8 @@ Ownership type shows small but measurable differences in readmission risk.
 
 ### Readmission Risk by State
 
-![State Map](images/risk_by_state_map.png)
+<img width="439" height="263" alt="image" src="https://github.com/user-attachments/assets/a6522247-6207-457f-bcc4-c440307d20fd" />
+
 
 Readmission risk varies geographically across states.
 
