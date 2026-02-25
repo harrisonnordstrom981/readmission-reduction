@@ -68,9 +68,9 @@ Example window function:
 
 Readmission performance is measured using the **Excess Readmission Ratio**:
 
-- > 1  → Higher-than-expected readmissions  
-- = 1  → Expected readmissions  
-- < 1  → Lower-than-expected readmissions
+- r > 1  → Higher-than-expected readmissions  
+- r = 1  → Expected readmissions  
+- r < 1  → Lower-than-expected readmissions
 
 Higher values indicate worse performance.
 
