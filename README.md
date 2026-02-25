@@ -151,26 +151,6 @@ Higher values indicate worse readmission performance.
 
 ---
 
-## Project Structure
-Hospital-Readmissions/
-
-README.md
-
-SQL/
-README.md
-stg_hrrp.sql
-stg_hospital_info.sql
-mart_hrrp_joined.sql
-hospital_risk_analysis.sql
-
-images/
-dashboard.png
-risk_by_rating.png
-risk_by_ownership.png
-risk_by_state_map.png
-
----
-
 ## Skills Demonstrated
 
 - SQL data cleaning and transformation
