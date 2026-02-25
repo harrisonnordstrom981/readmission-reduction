@@ -1,1 +1,185 @@
-# readmission-reduction
+# Hospital Readmission Risk Analysis
+
+## Overview
+
+This project analyzes hospital readmission performance using data from the CMS Hospital Readmissions Reduction Program (HRRP). The goal was to identify patterns in hospital readmission risk and explore how performance varies across hospital ratings, ownership types, and geographic regions.
+
+The project uses **BigQuery SQL** for data cleaning and transformation and **Tableau** for visualization and dashboard development.
+
+This project demonstrates an end-to-end analytics workflow including data cleaning, joins, aggregation, window functions, and dashboard design.
+
+---
+
+## Tools Used
+
+- **Google BigQuery**
+  - Data cleaning and transformation
+  - Multi-table joins
+  - Aggregations
+  - Window functions
+
+- **Tableau**
+  - Data visualization
+  - Dashboard design
+  - Geographic analysis
+
+- **SQL Techniques**
+  - SAFE_CAST data cleaning
+  - Date parsing
+  - Aggregations
+  - Window functions
+  - Ranking functions
+
+---
+
+## Data Sources
+
+**CMS Hospital Readmissions Reduction Program (HRRP)**
+
+Datasets used:
+
+- Hospital Readmission Measures
+- Hospital General Information
+
+These datasets include hospital attributes and readmission metrics across multiple medical conditions.
+
+---
+
+## SQL Pipeline
+
+The SQL pipeline was developed in **Google BigQuery** and consists of four main steps:
+
+### 1. HRRP Staging View
+
+Creates a cleaned version of HRRP readmission data.
+
+- Normalizes hospital identifiers
+- Converts numeric fields
+- Parses dates
+- Flags suppressed rows
+
+### 2. Hospital Info Staging View
+
+Creates a cleaned hospital attributes table.
+
+- Normalizes hospital identifiers
+- Converts rating values to numeric format
+- Standardizes ownership and hospital type fields
+
+### 3. Joined Data Mart
+
+Joins readmission metrics with hospital attributes.
+
+This dataset contains:
+
+- Hospital ratings
+- Ownership types
+- Geographic information
+- Readmission metrics
+
+### 4. Hospital Risk Analysis
+
+Aggregates data to the hospital level and calculates readmission risk.
+
+Key calculations:
+
+- Average Excess Readmission Ratio
+- Measures above expected readmissions
+- Measures reported
+- Hospital ranking within each state
+
+Window functions were used to rank hospitals by readmission risk.
+
+---
+
+## Dashboard
+
+### Hospital Readmission Risk Analysis Dashboard
+
+![Dashboard](images/dashboard.png)
+
+The Tableau dashboard explores hospital readmission risk across several dimensions.
+
+---
+
+### Readmission Risk by Hospital Rating
+
+![Risk by Rating](images/risk_by_rating.png)
+
+Higher-rated hospitals generally show lower readmission risk.
+
+---
+
+### Readmission Risk by Hospital Ownership
+
+![Risk by Ownership](images/risk_by_ownership.png)
+
+Ownership type shows small but measurable differences in readmission risk.
+
+---
+
+### Readmission Risk by State
+
+![State Map](images/risk_by_state_map.png)
+
+Readmission risk varies geographically across states.
+
+---
+
+## Key Findings
+
+- Hospitals with higher quality ratings tend to have lower readmission risk
+- Most hospitals cluster near an excess readmission ratio of 1.0
+- Ownership types show small differences in average readmission risk
+- Geographic variation exists across states
+
+---
+
+## Risk Interpretation
+
+Hospital performance is measured using the **Excess Readmission Ratio**:
+
+- Greater than 1 → Higher-than-expected readmissions
+- Equal to 1 → Expected readmissions
+- Less than 1 → Lower-than-expected readmissions
+
+Higher values indicate worse readmission performance.
+
+---
+
+## Project Structure
+Hospital-Readmissions/
+
+README.md
+
+SQL/
+README.md
+stg_hrrp.sql
+stg_hospital_info.sql
+mart_hrrp_joined.sql
+hospital_risk_analysis.sql
+
+images/
+dashboard.png
+risk_by_rating.png
+risk_by_ownership.png
+risk_by_state_map.png
+
+---
+
+## Skills Demonstrated
+
+- SQL data cleaning and transformation
+- BigQuery analytics workflows
+- Data modeling
+- Window functions
+- Data visualization
+- Dashboard development
+- Healthcare data analysis
+
+---
+
+## Author
+
+Harrison Nordstrom  
+Economics Student – Virginia Tech
