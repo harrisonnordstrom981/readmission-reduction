@@ -66,7 +66,7 @@ Example window function:
 
 ## Risk Interpretation
 
-Readmission performance is measured using the **Excess Readmission Ratio**:
+Readmission performance is measured using the **Excess Readmission Ratio** (r): 
 
 - r > 1  → Higher-than-expected readmissions  
 - r = 1  → Expected readmissions  
