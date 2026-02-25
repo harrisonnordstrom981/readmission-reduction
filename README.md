@@ -166,6 +166,6 @@ Higher values indicate worse readmission performance.
 ## Author
 
 Harrison Nordstrom  
-Economics Student – Virginia Tech Class of 2026
-nordstromharrison@gmail.com
-www.linkedin.com/in/nordstromharrison
+ - Economics Student – Virginia Tech Class of 2026
+ - nordstromharrison@gmail.com
+ - www.linkedin.com/in/nordstromharrison
