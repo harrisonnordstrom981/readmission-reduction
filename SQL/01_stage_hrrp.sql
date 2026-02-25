@@ -1,22 +1,22 @@
-CREATE OR REPLACE VIEW `YOUR_PROJECT.readmissions.stg_hrrp` AS
+CREATE OR REPLACE VIEW `readmissions-488017.readmissions.stg_hrrp` AS
 SELECT
-  -- HRRP file has Facility ID as int -> normalize to 6-char string like 010001
+  -- normalize Facility ID to 6-char string like 010001
   LPAD(CAST(SAFE_CAST(`Facility ID` AS INT64) AS STRING), 6, '0') AS facility_id_norm,
 
-  TRIM(`Facility Name`) AS facility_name_hrrp,
-  TRIM(State) AS state,
-  TRIM(`Measure Name`) AS measure_name,
+  TRIM(CAST(`Facility Name` AS STRING)) AS facility_name_hrrp,
+  TRIM(CAST(State AS STRING)) AS state,
+  TRIM(CAST(`Measure Name` AS STRING)) AS measure_name,
 
   SAFE_CAST(`Number of Discharges` AS INT64) AS discharges,
   SAFE_CAST(`Excess Readmission Ratio` AS FLOAT64) AS excess_ratio,
   SAFE_CAST(`Predicted Readmission Rate` AS FLOAT64) AS predicted_rate,
   SAFE_CAST(`Expected Readmission Rate` AS FLOAT64) AS expected_rate,
 
-  -- "Too Few to Report" -> NULL
+  -- "Too Few to Report" becomes NULL via SAFE_CAST
   SAFE_CAST(`Number of Readmissions` AS INT64) AS readmissions,
 
-  PARSE_DATE('%m/%d/%Y', `Start Date`) AS start_date,
-  PARSE_DATE('%m/%d/%Y', `End Date`) AS end_date,
+  SAFE.PARSE_DATE('%m/%d/%Y', CAST(`Start Date` AS STRING)) AS start_date,
+  SAFE.PARSE_DATE('%m/%d/%Y', CAST(`End Date` AS STRING)) AS end_date,
 
-  CASE WHEN SAFE_CAST(`Number of Readmissions` AS INT64) IS NULL THEN 1 ELSE 0 END AS suppressed_flag
-FROM `YOUR_PROJECT.readmissions.raw_hrrp_2025`;
+  IF(SAFE_CAST(`Number of Readmissions` AS INT64) IS NULL, 1, 0) AS suppressed_flag
+FROM `readmissions-488017.readmissions.raw_hrrp_2025`;
